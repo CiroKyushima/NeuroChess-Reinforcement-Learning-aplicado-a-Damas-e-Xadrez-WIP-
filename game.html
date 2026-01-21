@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Damas | Jogo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+
+        <header class="top-bar">
+            <button class="back-button" onclick="goToMenu()">← Menu</button>
+            <h1>♟️ Damas</h1>
+        </header>
+
+        <div class="board-wrapper">
+            <div div id="board" class="board">
+                <!-- 64 casas -->
+                <!-- Geradas manualmente por enquanto -->
+                <!-- Casas escuras são jogáveis -->
+                <!-- Linha 1 -->
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+
+                <!-- Linha 2 -->
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+
+                <!-- Linha 3 -->
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece black"></div></div>
+
+                <!-- Linha 4 -->
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+
+                <!-- Linha 5 -->
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+
+                <!-- Linha 6 -->
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+
+                <!-- Linha 7 -->
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+
+                <!-- Linha 8 -->
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+                <div class="square dark"><div class="piece red"></div></div>
+                <div class="square light"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/game.js">
+        function voltar() {
+            window.location.href = "index.html";
+        }
+    </script>
+    <div id="game-over" class="game-over hidden">
+        <div class="game-over-card">
+            <h2 id="winner-text">Vencedor</h2>
+            <button onclick="goToMenu()">Voltar ao Menu</button>
+        </div>
+    </div>
+
+</body>
+</html>
