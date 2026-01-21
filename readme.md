@@ -64,7 +64,7 @@ Além disso, o projeto busca ser acessível para estudantes e entusiastas que de
 
 Contribuições são bem-vindas! 🚀
 
-Se você deseja colaborar com melhorias na interface, lógica dos jogos ou desenvolvimento da IA, fique à vontade para abrir uma *issue* ou *pull request*.
+Se você deseja colaborar com melhorias na interface, lógica dos jogos ou desenvolvimento da IA, fique à vontade para abrir uma *issue* ou *pull request*. alias o projeto e para aplicar uma IA especifica, mas tambem pensei na possibilidade de implementar multiplas IAs para testes.
 
 ---
 
