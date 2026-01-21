@@ -75,6 +75,64 @@ body {
     }
 }
 
+.ai-toggle {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: #fff;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Switch base */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+/* Esconde checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #555;
+    border-radius: 34px;
+    transition: 0.3s;
+}
+
+/* Bolinha */
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+/* ON */
+input:checked + .slider {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
+
+input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
 /* abaixo a interface do jogo */
 
 .game-container {
