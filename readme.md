@@ -1,5 +1,7 @@
 # ♟️ NeuroChess
-
+## acesse o site do xadrez no link abaixo:
+https://neurochess.netlify.app
+## Descrição do Projeto
 NeuroChess é um projeto em desenvolvimento que tem como objetivo criar uma plataforma web interativa para jogos de tabuleiro clássicos — **Damas** e **Xadrez** — integrados com **Inteligência Artificial baseada em Reinforcement Learning (Aprendizado por Reforço)**.
 
 O foco principal do projeto é permitir que qualquer pessoa, mesmo sem conhecimento técnico em IA, possa jogar contra agentes inteligentes e acompanhar a evolução desses modelos.
