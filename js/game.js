@@ -62,11 +62,16 @@ const boardState = [
     [2,0,2,0,2,0,2,0],
 ];
 
+const HUMAN_PLAYER = 2;
+const AI_PLAYER = 1;
+
 let selectedPiece = null;
-let currentPlayer = 2;
+let currentPlayer = HUMAN_PLAYER;
 let captureMoves = [];
 let mustContinueCapture = false;
-let forcedPiece = null;
+
+// lê o switch do menu
+const USE_AI = localStorage.getItem("useAI") === "true";
 
 // =====================
 // TABULEIRO
@@ -108,7 +113,9 @@ function createBoard() {
 // SELEÇÃO
 // =====================
 function selectPiece(row, col) {
-    // ❌ não permite trocar de peça durante captura múltipla
+    // função para bloquear jogador na vez da IA
+    if (USE_AI && currentPlayer === AI_PLAYER) return;
+    // não permite trocar de peça durante captura múltipla
     if (mustContinueCapture) {
         if (!selectedPiece ||
             selectedPiece.row !== row ||
@@ -225,13 +232,15 @@ function handleSquareClick(r, c) {
 
     // 🔥 CAPTURA
     if (capture) {
-        executeCapture(capture);
-        return; // ⚠️ executeCapture já controla combo e turno
+        const hasCombo = executeCapture(capture);
+        if (!hasCombo) endTurn();
+        return;
     }
 
     // 🚶 MOVIMENTO SIMPLES (APENAS SE NÃO ESTIVER EM COMBO)
     if (!mustContinueCapture) {
         movePiece(selectedPiece.row, selectedPiece.col, r, c);
+        endTurn();
     }
 }
 
@@ -244,9 +253,8 @@ function movePiece(fr, fc, tr, tc) {
     boardState[fr][fc] = 0;
 
     checkPromotion(tr, tc);
-    endTurn();
+    // ❌ não chama endTurn aqui
 }
-
 function executeCapture(move) {
     const piece = boardState[selectedPiece.row][selectedPiece.col];
 
@@ -271,11 +279,11 @@ function executeCapture(move) {
     if (captureMoves.length > 0) {
         mustContinueCapture = true;
         highlightMoves(move.toRow, move.toCol);
-        return;
+        return true;
     }
 
     mustContinueCapture = false;
-    endTurn();
+    return false;
 }
 
 
@@ -321,13 +329,21 @@ function getCaptureDirections(row, col) {
 // TURNO
 // =====================
 function endTurn() {
+
+    if (mustContinueCapture) return;
+
     mustContinueCapture = false;
     clearSelection();
 
+    currentPlayer = currentPlayer === HUMAN_PLAYER ? AI_PLAYER : HUMAN_PLAYER;
+
     if (checkGameOver()) return;
 
-    currentPlayer = currentPlayer === 1 ? 2 : 1;
     createBoard();
+
+    if (USE_AI && currentPlayer === AI_PLAYER) {
+        setTimeout(aiPlay, 300);
+    }
 }
 // =====================
 // Movimento da Dama
@@ -450,4 +466,107 @@ function showGameOver(winner) {
 
 function goToMenu() {
     window.location.href = "index.html";
+}
+
+// =====================
+// Função para IA
+// =====================
+function applyMove(move) {
+    // simula a peça selecionada (executeCapture depende disso)
+    selectedPiece = { row: move.fromRow, col: move.fromCol };
+
+    if (move.capRow !== undefined) {
+        return executeCapture(move); // ✅ retorna true/false (combo)
+    } else {
+        movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
+        return false;
+    }
+}
+
+
+function getAllMoves(board, player) {
+    let moves = [];
+    let captureMoves = [];
+
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+
+            const piece = board[r][c];
+            if (!belongsToPlayer(piece)) continue;
+
+            const isKing = [3,4].includes(piece);
+
+            // CAPTURAS
+            const captures = isKing
+                ? getKingCaptureMoves(r, c)
+                : getCaptureMoves(r, c);
+
+            captures.forEach(m => {
+                captureMoves.push({
+                    fromRow: r,
+                    fromCol: c,
+                    toRow: m.toRow,
+                    toCol: m.toCol,
+                    capRow: m.capRow,
+                    capCol: m.capCol
+                });
+            });
+
+            // MOVIMENTOS SIMPLES (só se não houver captura)
+            if (captures.length === 0) {
+
+                if (isKing) {
+                    getKingMoveSquares(r, c).forEach(m => {
+                        moves.push({
+                            fromRow: r,
+                            fromCol: c,
+                            toRow: m.r,
+                            toCol: m.c
+                        });
+                    });
+                } else {
+                    getMoveDirections(r, c).forEach(d => {
+                        const nr = r + d.r;
+                        const nc = c + d.c;
+                        if (inside(nr, nc) && board[nr][nc] === 0) {
+                            moves.push({
+                                fromRow: r,
+                                fromCol: c,
+                                toRow: nr,
+                                toCol: nc
+                            });
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    // captura obrigatória
+    return captureMoves.length > 0 ? captureMoves : moves;
+}
+
+function aiPlay() {
+    if (!USE_AI) return;
+    if (currentPlayer !== AI_PLAYER) return;
+    if (checkGameOver()) return;
+
+    const moves = getAllMoves(boardState, AI_PLAYER);
+    if (!moves || moves.length === 0) {
+        endGame(HUMAN_PLAYER);
+        return;
+    }
+
+    const captureMoves = moves.filter(m => m.capRow !== undefined);
+    const possibleMoves = captureMoves.length > 0 ? captureMoves : moves;
+
+    const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+
+    const hasCombo = applyMove(move);
+
+    if (hasCombo) {
+        setTimeout(aiPlay, 300);
+    } else {
+        endTurn();
+    }
 }
