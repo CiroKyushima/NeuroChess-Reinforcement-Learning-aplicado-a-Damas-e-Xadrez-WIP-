@@ -65,6 +65,8 @@ const boardState = [
 let selectedPiece = null;
 let currentPlayer = 2;
 let captureMoves = [];
+let mustContinueCapture = false;
+let forcedPiece = null;
 
 // =====================
 // TABULEIRO
@@ -106,6 +108,15 @@ function createBoard() {
 // SELEÇÃO
 // =====================
 function selectPiece(row, col) {
+    // ❌ não permite trocar de peça durante captura múltipla
+    if (mustContinueCapture) {
+        if (!selectedPiece ||
+            selectedPiece.row !== row ||
+            selectedPiece.col !== col) {
+            return;
+        }
+    }
+
     if (!belongsToPlayer(boardState[row][col])) return;
 
     clearSelection();
@@ -124,6 +135,10 @@ function highlightMoves(row, col) {
 
     const piece = boardState[row][col];
 
+    if (mustContinueCapture) {
+        captureMoves.forEach(m => highlight(m.toRow, m.toCol));
+        return;
+    }
     // 👑 DAMA
     if ([3,4].includes(piece)) {
         const kingCaptures = getKingCaptureMoves(row, col);
@@ -181,7 +196,7 @@ function getCaptureMoves(row, col) {
                 capCol: midC
             });
         }
-        playCaptureSound();
+
     });
 
     return moves;
@@ -192,13 +207,30 @@ function getCaptureMoves(row, col) {
 // CLIQUE NA CASA
 // =====================
 function handleSquareClick(r, c) {
-    if (!selectedPiece || !isHighlighted(r,c)) return;
+    if (!selectedPiece) return;
 
-    const capture = captureMoves.find(m => m.toRow === r && m.toCol === c);
+    // 🔒 Durante combo, só aceita capturas
+    if (mustContinueCapture) {
+        const capture = captureMoves.find(
+            m => m.toRow === r && m.toCol === c
+        );
+        if (!capture) return;
+    }
 
+    if (!isHighlighted(r, c)) return;
+
+    const capture = captureMoves.find(
+        m => m.toRow === r && m.toCol === c
+    );
+
+    // 🔥 CAPTURA
     if (capture) {
         executeCapture(capture);
-    } else {
+        return; // ⚠️ executeCapture já controla combo e turno
+    }
+
+    // 🚶 MOVIMENTO SIMPLES (APENAS SE NÃO ESTIVER EM COMBO)
+    if (!mustContinueCapture) {
         movePiece(selectedPiece.row, selectedPiece.col, r, c);
     }
 }
@@ -236,13 +268,13 @@ function executeCapture(move) {
     createBoard();
     clearHighlights();
 
-    // 🔁 SE TIVER OUTRA CAPTURA, CONTINUA O TURNO
     if (captureMoves.length > 0) {
+        mustContinueCapture = true;
         highlightMoves(move.toRow, move.toCol);
         return;
     }
 
-    // senão, troca o turno
+    mustContinueCapture = false;
     endTurn();
 }
 
@@ -289,6 +321,7 @@ function getCaptureDirections(row, col) {
 // TURNO
 // =====================
 function endTurn() {
+    mustContinueCapture = false;
     clearSelection();
 
     if (checkGameOver()) return;
