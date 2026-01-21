@@ -17,11 +17,28 @@
             </button>
 
             <p>xadez em desenvolvimento</p>
+            <div class="ai-toggle">
+                <span>🤖 Ativar IA</span>
+                <label class="switch">
+                    <input type="checkbox" id="aiSwitch">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
-
     </div>
 
     <script>
+        
+        const aiSwitch = document.getElementById("aiSwitch");
+
+        // carrega estado salvo
+        aiSwitch.checked = localStorage.getItem("useAI") === "true";
+
+        // salva ao mudar
+        aiSwitch.addEventListener("change", () => {
+            localStorage.setItem("useAI", aiSwitch.checked);
+        });
+
         function entrarNoJogo() {
             window.location.href = "game.html";
         }
