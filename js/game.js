@@ -70,7 +70,6 @@ let currentPlayer = HUMAN_PLAYER;
 let captureMoves = [];
 let mustContinueCapture = false;
 
-// lê o switch do menu
 const USE_AI = localStorage.getItem("useAI") === "true";
 
 // =====================
@@ -146,7 +145,7 @@ function highlightMoves(row, col) {
         captureMoves.forEach(m => highlight(m.toRow, m.toCol));
         return;
     }
-    // 👑 DAMA
+    //  DAMA
     if ([3,4].includes(piece)) {
         const kingCaptures = getKingCaptureMoves(row, col);
         const kingMoves = getKingMoveSquares(row, col);
@@ -158,7 +157,7 @@ function highlightMoves(row, col) {
         return;
     }
 
-    // ♟️ PEÇA COMUM
+    //  PEÇA COMUM
     const captures = getCaptureMoves(row, col);
     captureMoves = captures;
 
@@ -216,7 +215,7 @@ function getCaptureMoves(row, col) {
 function handleSquareClick(r, c) {
     if (!selectedPiece) return;
 
-    // 🔒 Durante combo, só aceita capturas
+    //  Durante combo, só aceita capturas
     if (mustContinueCapture) {
         const capture = captureMoves.find(
             m => m.toRow === r && m.toCol === c
@@ -230,7 +229,7 @@ function handleSquareClick(r, c) {
         m => m.toRow === r && m.toCol === c
     );
 
-    // 🔥 CAPTURA
+    //  CAPTURA
     if (capture) {
         const hasCombo = executeCapture(capture);
         if (!hasCombo) endTurn();
@@ -253,7 +252,7 @@ function movePiece(fr, fc, tr, tc) {
     boardState[fr][fc] = 0;
 
     checkPromotion(tr, tc);
-    // ❌ não chama endTurn aqui
+    //  não chama endTurn aqui
 }
 function executeCapture(move) {
     const piece = boardState[selectedPiece.row][selectedPiece.col];
@@ -476,7 +475,7 @@ function applyMove(move) {
     selectedPiece = { row: move.fromRow, col: move.fromCol };
 
     if (move.capRow !== undefined) {
-        return executeCapture(move); // ✅ retorna true/false (combo)
+        return executeCapture(move); //  retorna true/false (combo)
     } else {
         movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
         return false;
@@ -570,3 +569,4 @@ function aiPlay() {
         endTurn();
     }
 }
+
