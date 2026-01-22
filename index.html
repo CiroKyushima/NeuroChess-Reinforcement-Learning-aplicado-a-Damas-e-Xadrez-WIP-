@@ -31,10 +31,8 @@
         
         const aiSwitch = document.getElementById("aiSwitch");
 
-        // carrega estado salvo
         aiSwitch.checked = localStorage.getItem("useAI") === "true";
 
-        // salva ao mudar
         aiSwitch.addEventListener("change", () => {
             localStorage.setItem("useAI", aiSwitch.checked);
         });
@@ -45,3 +43,4 @@
     </script>
 </body>
 </html>
+
